@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "table.h"
 
 struct {
   struct spinlock lock;
@@ -14,6 +15,9 @@ struct {
 
 static struct proc *initproc;
 
+struct table table;
+struct spinlock sl;
+int countCalls = 0;
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
@@ -532,3 +536,16 @@ procdump(void)
     cprintf("\n");
   }
 }
+int counts(struct table* tb){
+    for (int i = 0; i <22 ; ++i) {
+        tb->counts[i] =table.counts[i];
+    }
+    return 0;
+}
+
+void incer(int sys_num){
+    acquire(&sl);
+    table.counts[sys_num-1]++;
+    release(&sl);
+}
+
