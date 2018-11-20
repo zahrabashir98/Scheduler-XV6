@@ -1,7 +1,6 @@
-
 #include "types.h"
 #include "user.h"
-#include "table.h"
+#include "data.h"
 
 int main(int argc, char **argv) {
 
@@ -37,4 +36,3 @@ int main(int argc, char **argv) {
     printf(1, "sys_counts : %d \n", table.counts[21]);
     exit();
 }
-
