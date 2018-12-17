@@ -4,11 +4,6 @@
 
 int main(int argc, char **argv) {
 
-//   struct proc ptable[NPROC];
-//   struct proc *p;
-// printf(1, "CTIME : %d \n", p->ctime);
-
-  
     // create object of struct and test it
     struct table table;
     int n = counts(&table);
