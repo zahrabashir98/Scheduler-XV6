@@ -92,6 +92,11 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
 
+  p->ctime = ticks;
+  // p->retime = 0;
+  // p->rutime = 0;
+  // p->stime = 0;
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -133,6 +138,7 @@ userinit(void)
     panic("userinit: out of memory?");
   inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
   p->sz = PGSIZE;
+  p->ctime = ticks;
   memset(p->tf, 0, sizeof(*p->tf));
   p->tf->cs = (SEG_UCODE << 3) | DPL_USER;
   p->tf->ds = (SEG_UDATA << 3) | DPL_USER;
@@ -297,6 +303,7 @@ wait(void)
         p->parent = 0;
         p->name[0] = 0;
         p->killed = 0;
+        p->ctime = 0;
         p->state = UNUSED;
         release(&ptable.lock);
         return pid;
@@ -344,6 +351,7 @@ scheduler(void)
       // before jumping back to us.
       c->proc = p;
       switchuvm(p);
+      // save time 
       p->state = RUNNING;
 
       swtch(&(c->scheduler), p->context);

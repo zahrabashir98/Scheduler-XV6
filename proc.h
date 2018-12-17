@@ -49,6 +49,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  int ctime;
+  float arrival_time;          //
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -56,3 +58,57 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+
+
+// int
+// main(int argc, char *argv[]){
+//   struct proc ptable[NPROC];
+//   struct proc *p;
+ 
+
+//   // err = getptable(NPROC * sizeof(struct proc), &ptable);
+//   // if (err) {
+//   //   printf(1,"Error getting ptable");
+//   //   exit();
+//   // }
+
+//   // printf(1, "PID\t\tPPID\t\tSTATE\t\tPRIORITY\tTICKETS\t\tCPUTIME\t\tCMD\n");
+//   for(p = ptable; p != &ptable[NPROC-1]; p++) {
+//         // if (p->state == UNUSED) continue;
+//     // printf(1, "sys_link : %d \n", p->ctime);
+
+//     // printf (1, "%d",int(p->ctime));
+// 	// init does not have ppid!
+// 	// if (p->pid == 1)
+// 	//     printf(1, "%d\t\tN/A",p->pid);
+// 	// else
+// 	//     printf(1, "%d\t\t%d", p->pid, p->ppid);
+
+//   // 	switch(p->state){
+//   // 	case UNUSED:
+//   // 		printf(1,"\t\t%s", "UNUSED  ");
+//   // 		break;
+//   // 	case EMBRYO:
+//   // 		printf(1,"\t\t%s", "EMBRYO  ");
+//   // 		break;
+//   // 	case SLEEPING:
+//   // 		printf(1,"\t\t%s", "SLEEPING");
+//   // 		break;
+//   // 	case RUNNABLE:
+//   // 		printf(1,"\t\t%s", "RUNNABLE");
+//   // 		break;
+//   // 	case RUNNING:
+//   // 		printf(1,"\t\t%s", "RUNNING ");
+//   // 		break;
+//   // 	case ZOMBIE:
+//   // 		printf(1,"\t\t%s", "ZOMBIE  ");
+//   // 		break;
+//   // 	}
+
+//   //   printf(1, "\t%d", p->priority);
+//   //   printf(1, "\t\t%d", p->tickets);
+//     printf(1, "\t\t%d", p->ctime);
+//   // 	printf(1,"\t\t%s\n", p->name);
+//   }
+//   exit();
+// }
