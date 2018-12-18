@@ -13,9 +13,9 @@
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
-  // Three queues, associating with each priority level
-  struct proc* que[3][NPROC];
-  //three numbers, associating with the number of processes in each queue
+  // Three pqueueues, associating with each priority level
+  struct proc* pqueue[3][NPROC];
+  //three numbers, associating with the number of processes in each pqueueue
   int priCount[3];
 }ptable;
 //###
@@ -175,7 +175,7 @@ userinit(void)
   acquire(&ptable.lock);
   
   ptable.priCount[0]++;
-  ptable.que[0][ptable.priCount[0]] = p;
+  ptable.pqueue[0][ptable.priCount[0]] = p;
   p->state = RUNNABLE;
 
   release(&ptable.lock);
@@ -242,7 +242,7 @@ fork(void)
 
   acquire(&ptable.lock);
   ptable.priCount[0]++;
-  ptable.que[0][ptable.priCount[0]] = np;
+  ptable.pqueue[0][ptable.priCount[0]] = np;
   np->state = RUNNABLE;
 
   release(&ptable.lock);
@@ -366,7 +366,7 @@ scheduler(void)
 		while(ptable.priCount[priority] > -1) {
 			
 			
-			p = ptable.que[priority][0];
+			p = ptable.pqueue[priority][0];
 			
 			p->tickcounter ++;
       if (p->tickcounter==1){
@@ -376,7 +376,7 @@ scheduler(void)
 			// deleting 
 			int i;
 			for (i = 0; i < ptable.priCount[priority]; i++) {
-				ptable.que[priority][i] = ptable.que[priority][i + 1];
+				ptable.pqueue[priority][i] = ptable.pqueue[priority][i + 1];
 			}
 			ptable.priCount[priority]--;
 			
@@ -443,7 +443,7 @@ yield(void)
 	  myproc()->priority++;
 	 }
 	ptable.priCount[myproc()->priority]++;
-	ptable.que[myproc()->priority][ptable.priCount[myproc()->priority]] = myproc();
+	ptable.pqueue[myproc()->priority][ptable.priCount[myproc()->priority]] = myproc();
   
   myproc()->state = RUNNABLE;
   sched();
@@ -522,7 +522,7 @@ wakeup1(void *chan)
     if(p->state == SLEEPING && p->chan == chan){
 	
 		ptable.priCount[p->priority]++;
-        ptable.que[p->priority][ptable.priCount[p->priority]] = p;
+        ptable.pqueue[p->priority][ptable.priCount[p->priority]] = p;
 		p->state = RUNNABLE;
 		
 		}
@@ -553,7 +553,7 @@ kill(int pid)
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING){
 		ptable.priCount[p->priority]++;
-		ptable.que[p->priority][ptable.priCount[p->priority]] = p; 
+		ptable.pqueue[p->priority][ptable.priCount[p->priority]] = p; 
 		p->state = RUNNABLE;
 		}
       release(&ptable.lock);
@@ -625,24 +625,24 @@ void resetPriority(void) {
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
         if (p->state == RUNNABLE) {
-            //delete the runnable process from its original queue
+            //delete the runnable process from its original pqueueue
             int token;
             for (token = 0; token < NPROC; token++) {
-                if (p == ptable.que[p->priority][token]) {
+                if (p == ptable.pqueue[p->priority][token]) {
                     int i;
                     for (i = token; i < ptable.priCount[p->priority]; i++) {
-                        ptable.que[p->priority][i] = ptable.que[p->priority][i + 1];
+                        ptable.pqueue[p->priority][i] = ptable.pqueue[p->priority][i + 1];
                     }
                     ptable.priCount[p->priority]--;
                 }
                 break;
             }
-            //set the priority to 0, and add it to the first queue
+            //set the priority to 0, and add it to the first pqueueue
             p->priority = 0;
             ptable.priCount[0]++;
-            ptable.que[0][ptable.priCount[0]] = p;
+            ptable.pqueue[0][ptable.priCount[0]] = p;
         } else {
-            //queues only contain process that are runnable, so change the priority is enough.
+            //pqueueues only contain process that are runnable, so change the priority is enough.
             p->priority = 0;
         }
     }

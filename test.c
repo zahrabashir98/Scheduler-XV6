@@ -5,12 +5,12 @@
 int main(int argc, char **argv) {
 
     // create object of struct and test it
-    struct table table;
-    int n = counts(&table);
-    // if error
-    if (n < 0) {
-        return -1;
-    }
+    // struct table table;
+    // int n = counts(&table);
+    // // if error
+    // if (n < 0) {
+    //     return -1;
+    // }
     printf(1,"sjjjjjjjjjjjjjjjjjjj");
 
     // int pid = fork();

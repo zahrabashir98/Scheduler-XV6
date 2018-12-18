@@ -1,6 +1,8 @@
 #include "types.h"
 #include "fcntl.h"
-
+#include "stdio.h"
+#include "stdlib.h"
+//  #include <bits/libc-header-start.h>
 
 void writetest(void)
 {
@@ -51,13 +53,13 @@ void writetest(void)
   }
   printf(stdout, "small file test ok\n");
 }
-int main(){
-
-writetest();
+int main(int argc, char **argv){
+printf(1,"HOOOOO");
+// writetest();
 
   // struct *proc p ;
   //call sys_call
   // print pid and times
-
+exit();
 }
 
