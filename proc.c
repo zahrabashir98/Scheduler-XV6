@@ -86,7 +86,7 @@ allocproc(void)
 {
   struct proc *p;
   char *sp;
-
+ 
   acquire(&ptable.lock);
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
@@ -100,6 +100,11 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 0;
+  p->ctime = ticks;
+  p->retime = 0;
+  p->rutime = 0;
+  p->stime = 0;
+  p->tickcounter = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -141,6 +146,8 @@ userinit(void)
     panic("userinit: out of memory?");
   inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
   p->sz = PGSIZE;
+  p->ctime = ticks;
+  p->priority = 2;
   memset(p->tf, 0, sizeof(*p->tf));
   p->tf->cs = (SEG_UCODE << 3) | DPL_USER;
   p->tf->ds = (SEG_UDATA << 3) | DPL_USER;
@@ -352,12 +359,17 @@ scheduler(void)
         for(priority = 0; priority <= level; priority++) {
             while(ptable.priCount[priority] > -1) {
                 proc = ptable.pqueue[priority][0];
+                proc->tickcounter ++;
+                if (proc->tickcounter==1){
+                  proc->first_res_time = ticks;
+                }
                 int i;
                 for (i = 0; i < ptable.priCount[priority]; i++) {
                     ptable.pqueue[priority][i] = ptable.pqueue[priority][i + 1];
                 }
                 ptable.priCount[priority]--;
                 switchuvm(proc);
+                proc->ltime =ticks;
                 proc->state = RUNNING;
                 swtch(&cpu->scheduler, proc->context);
                 switchkvm();
