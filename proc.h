@@ -52,6 +52,13 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int priority;
+  int ctime;
+  int ltime;
+  int stime;                   //process SLEEPING time
+  int retime;                  //process READY(RUNNABLE) time
+  int rutime;                  //process RUNNING time
+  int tickcounter;
+  int first_res_time;
 };
 
 extern struct cpu *cpu asm("%gs:0");       // &cpus[cpunum()]

@@ -86,7 +86,7 @@ allocproc(void)
 {
   struct proc *p;
   char *sp;
-
+ 
   acquire(&ptable.lock);
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
@@ -100,6 +100,11 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 0;
+  p->ctime = ticks;
+  p->retime = 0;
+  p->rutime = 0;
+  p->stime = 0;
+  p->tickcounter = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -141,6 +146,8 @@ userinit(void)
     panic("userinit: out of memory?");
   inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
   p->sz = PGSIZE;
+  p->ctime = ticks;
+  p->priority = 2;
   memset(p->tf, 0, sizeof(*p->tf));
   p->tf->cs = (SEG_UCODE << 3) | DPL_USER;
   p->tf->ds = (SEG_UDATA << 3) | DPL_USER;
@@ -289,6 +296,7 @@ int
 wait(void)
 {
   struct proc *p;
+  struct proc* process;
   int havekids, pid;
   // struct proc *curproc = myproc();
   
@@ -311,6 +319,11 @@ wait(void)
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
+        for(process = ptable.proc; process < &ptable.proc[NPROC]; process++){
+          if (process==p){
+            // ptable
+          }
+        }
         release(&ptable.lock);
         return pid;
       }
@@ -352,12 +365,17 @@ scheduler(void)
         for(priority = 0; priority <= level; priority++) {
             while(ptable.priCount[priority] > -1) {
                 proc = ptable.pqueue[priority][0];
+                proc->tickcounter ++;
+                if (proc->tickcounter==1){
+                  proc->first_res_time = ticks;
+                }
                 int i;
                 for (i = 0; i < ptable.priCount[priority]; i++) {
                     ptable.pqueue[priority][i] = ptable.pqueue[priority][i + 1];
                 }
                 ptable.priCount[priority]--;
                 switchuvm(proc);
+                proc->ltime =ticks;
                 proc->state = RUNNING;
                 swtch(&cpu->scheduler, proc->context);
                 switchkvm();
@@ -573,4 +591,35 @@ void incer(int sys_num){
     acquire(&spin_lock);
     table.counts[sys_num-1]++;
     release(&spin_lock);
+}
+
+
+
+void resetPriority(void) {
+    struct proc *p;
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        if (p->state == RUNNABLE) {
+            //delete the runnable process from its original queue
+            int token;
+            for (token = 0; token < NPROC; token++) {
+                if (p == ptable.pqueue[p->priority][token]) {
+                    int i;
+                    for (i = token; i < ptable.priCount[p->priority]; i++) {
+                        ptable.pqueue[p->priority][i] = ptable.pqueue[p->priority][i + 1];
+                    }
+                    ptable.priCount[p->priority]--;
+                }
+                break;
+            }
+            //set the priority to 0, and add it to the first queue
+            p->priority = 0;
+            ptable.priCount[0]++;
+            ptable.pqueue[0][ptable.priCount[0]] = p;
+        } else {
+            //queues only contain process that are runnable, so change the priority is enough.
+            p->priority = 0;
+        }
+    }
+    release(&ptable.lock);
 }
