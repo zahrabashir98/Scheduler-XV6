@@ -1,6 +1,7 @@
 struct stat;
 struct rtcdate;
 struct countTable;
+struct proc;
 // system calls
 int fork(void);
 int exit(void) __attribute__((noreturn));
@@ -24,7 +25,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int nice(int);
-int getpri(void);
+int getpri(struct proc*);
 // int count(struct countTable*);
 
 

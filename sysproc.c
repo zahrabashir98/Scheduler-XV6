@@ -111,7 +111,9 @@ sys_nice(void) {
 int
 sys_getpri(void) {
     // int a[3] = {0,0,0};
- 
+    // struct proc *pr;
+    // if (argptr(0, (void*)&pr,sizeof(pr)<0)
+    // return -1 
     // if (myproc() != 0) {
     //   cprintf("PID:%d, Parent's PID:%d ,priority:%d\n",myproc()->pid, myproc()->parent->pid, myproc()->priority);
     //   int times[3] = {myproc()->ctime, myproc()->ltime, myproc()->first_res_time};
