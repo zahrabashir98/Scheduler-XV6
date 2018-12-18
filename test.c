@@ -11,6 +11,7 @@ int main(int argc, char **argv) {
     if (n < 0) {
         return -1;
     }
+
     // 1 means stdout not std error
     printf(1, "sys_fork : %d \n", table.counts[0]);
     printf(1, "sys_exit : %d \n", table.counts[1]);

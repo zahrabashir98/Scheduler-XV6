@@ -6,6 +6,7 @@
 #include "proc.h"
 #include "x86.h"
 #include "syscall.h"
+// #include "structCount.h"
 
 // User code makes a system call with INT T_SYSCALL.
 // System call number in %eax.
@@ -103,7 +104,8 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
-extern int count_syscalls(void);
+// extern int sys_count(void);
+// extern int countCalls[22];
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -127,7 +129,7 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_counts]  count_syscalls,
+// [SYS_count]   sys_count
 };
 
 void
@@ -135,10 +137,14 @@ syscall(void)
 {
   int num;
   struct proc *curproc = myproc();
-
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
-      incer(num);
+	  
+	  
+	//add count here
+    // countCalls[num-1]++;
+	
+	
     curproc->tf->eax = syscalls[num]();
   } else {
     cprintf("%d %s: unknown sys call %d\n",

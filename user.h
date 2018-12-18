@@ -1,7 +1,6 @@
 struct stat;
 struct rtcdate;
-struct table;
-
+struct countTable;
 // system calls
 int fork(void);
 int exit(void) __attribute__((noreturn));
@@ -24,7 +23,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int counts(struct table*);
+// int count(struct countTable*);
+
 
 // ulib.c
 int stat(char*, struct stat*);

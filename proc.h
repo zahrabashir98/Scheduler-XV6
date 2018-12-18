@@ -1,6 +1,6 @@
-// Per-CPU state
-# define level 3
+#define PRIORITY_MAX 2 
 
+// Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
   struct context *scheduler;   // swtch() here to enter scheduler
@@ -43,6 +43,9 @@ struct proc {
   char *kstack;                // Bottom of kernel stack for this process
   enum procstate state;        // Process state
   int pid;                     // Process ID
+  //###
+  int priority;
+  //###
   struct proc *parent;         // Parent process
   struct trapframe *tf;        // Trap frame for current syscall
   struct context *context;     // swtch() here to run process
@@ -51,18 +54,7 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  int priority;
-  int ctime;
-  int ltime;
-  int stime;                   //process SLEEPING time
-  int retime;                  //process READY(RUNNABLE) time
-  int rutime;                  //process RUNNING time
-  int tickcounter;
-  int first_res_time;
 };
-
-extern struct cpu *cpu asm("%gs:0");       // &cpus[cpunum()]
-extern struct proc *proc asm("%gs:4");     // cpus[cpunum()].proc
 
 // Process memory is laid out contiguously, low addresses first:
 //   text
