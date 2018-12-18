@@ -56,9 +56,6 @@ struct proc {
   char name[16];               // Process name (debugging)
   int ctime;
   int ltime;
-  int stime;                   //process SLEEPING time
-  int retime;                  //process READY(RUNNABLE) time
-  int rutime;                  //process RUNNING time
   int tickcounter;
   int first_res_time;
 
@@ -69,3 +66,5 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+extern struct cpu *cpu asm("%gs:0");       // &cpus[cpunum()]
+extern struct proc *proc asm("%gs:4");     // cpus[cpunum()].proc

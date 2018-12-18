@@ -109,9 +109,8 @@ found:
   p->pid = nextpid++;
   p->priority = 0;
   p->ctime = ticks;
-  p->retime = 0;
-  p->rutime = 0;
-  p->stime = 0;
+  p->ltime = 0;
+  p->first_res_time = 0;
 
   release(&ptable.lock);
 

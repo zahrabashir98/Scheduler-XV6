@@ -110,10 +110,17 @@ sys_nice(void) {
 
 int
 sys_getpri(void) {
-    if (myproc() != 0) {
-        cprintf("PID:%d, Parent's PID:%d ,priority:%d\n",myproc()->pid, myproc()->parent->pid, myproc()->priority);
-        return 0;
-    }
-    return -1;
+    // int a[3] = {0,0,0};
+ 
+    // if (myproc() != 0) {
+    //   cprintf("PID:%d, Parent's PID:%d ,priority:%d\n",myproc()->pid, myproc()->parent->pid, myproc()->priority);
+    //   int times[3] = {myproc()->ctime, myproc()->ltime, myproc()->first_res_time};
+
+    //   return times;
+
+    // }
+    // return a;
+    return 1;
+  
 }
 
