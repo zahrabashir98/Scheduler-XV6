@@ -318,6 +318,10 @@ wait(void)
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
+    
+        // for(process = p; process < &ptable.proc[NPROC]; ){
+        //   ptable.pqueue[process->priority][ptable.priCount[process->priority]] = ptable.pqueue[process++->priority][ptable.priCount[process->priority]];
+        // }
         release(&ptable.lock);
         return pid;
       }
@@ -585,4 +589,35 @@ void incer(int sys_num){
     acquire(&spin_lock);
     table.counts[sys_num-1]++;
     release(&spin_lock);
+}
+
+
+
+void resetPriority(void) {
+    struct proc *p;
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        if (p->state == RUNNABLE) {
+            //delete the runnable process from its original queue
+            int token;
+            for (token = 0; token < NPROC; token++) {
+                if (p == ptable.pqueue[p->priority][token]) {
+                    int i;
+                    for (i = token; i < ptable.priCount[p->priority]; i++) {
+                        ptable.pqueue[p->priority][i] = ptable.pqueue[p->priority][i + 1];
+                    }
+                    ptable.priCount[p->priority]--;
+                }
+                break;
+            }
+            //set the priority to 0, and add it to the first queue
+            p->priority = 0;
+            ptable.priCount[0]++;
+            ptable.pqueue[0][ptable.priCount[0]] = p;
+        } else {
+            //queues only contain process that are runnable, so change the priority is enough.
+            p->priority = 0;
+        }
+    }
+    release(&ptable.lock);
 }
