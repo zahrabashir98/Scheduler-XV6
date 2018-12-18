@@ -6,21 +6,19 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-// #include "countTable.h"
-// *** MY CODE HERE (Above Include) *** //
+#include "table.h"
 
-//###
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
-  // Three pqueueues, associating with each priority level
   struct proc* pqueue[3][NPROC];
-  //three numbers, associating with the number of processes in each pqueueue
   int priCount[3];
 }ptable;
-//###
 
-
+int countCalls = 0;
+struct table tB;
+struct spinlock sl;
+static struct proc *initproc;
 static struct proc *initproc;
 
 int nextpid = 1;
@@ -647,4 +645,23 @@ void resetPriority(void) {
         }
     }
     release(&ptable.lock);
+}
+
+int counts(struct table* tb){
+  tb->counts[0] = myproc()->ctime;
+  tb->counts[1] = myproc()->ltime;
+  tb->counts[2] = myproc()->first_res_time;
+  tb->counts[3] = -128;
+  return 0;
+
+    // for (int i = 0; i <22 ; ++i) {
+    //     tb->counts[i] =tB.counts[i];
+    // }
+    // return 0;
+}
+
+void incer(int sys_num){
+    acquire(&sl);
+    tB.counts[sys_num-1]++;
+    release(&sl);
 }

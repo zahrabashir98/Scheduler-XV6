@@ -5,12 +5,12 @@
 int main(int argc, char **argv) {
 
     // create object of struct and test it
-    // struct table table;
-    // int n = counts(&table);
-    // // if error
-    // if (n < 0) {
-    //     return -1;
-    // }
+    struct table table;
+    int n = counts(&table);
+    // if error
+    if (n < 0) {
+        return -1;
+    }
     printf(1,"sjjjjjjjjjjjjjjjjjjj");
 
     // int pid = fork();
@@ -28,10 +28,10 @@ int main(int argc, char **argv) {
 
 
     // 1 means stdout not std error
-    // printf(1, "sys_fork : %d \n", table.counts[0]);
-    // printf(1, "sys_exit : %d \n", table.counts[1]);
-    // printf(1, "sys_wait : %d \n", table.counts[2]);
-    // printf(1, "sys_pipe : %d \n", table.counts[3]);
+    printf(1, "sys_fork : %d \n", table.counts[0]);
+    printf(1, "sys_exit : %d \n", table.counts[1]);
+    printf(1, "sys_wait : %d \n", table.counts[2]);
+    printf(1, "sys_pipe : %d \n", table.counts[3]);
     // printf(1, "sys_read : %d \n", table.counts[4]);
     // printf(1, "sys_kill : %d \n", table.counts[5]);
     // printf(1, "sys_exec : %d \n", table.counts[6]);

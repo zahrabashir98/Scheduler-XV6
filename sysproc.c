@@ -126,3 +126,10 @@ sys_getpri(void) {
   
 }
 
+int sys_counts() {
+    struct table *tb;
+    if (argptr(0, (void *) &tb, sizeof(tb)) < 0)
+        return -1;
+    return counts(tb);
+}
+
