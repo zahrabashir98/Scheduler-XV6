@@ -108,6 +108,10 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 0;
+  p->ctime = ticks;
+  p->retime = 0;
+  p->rutime = 0;
+  p->stime = 0;
 
   release(&ptable.lock);
 
@@ -150,6 +154,9 @@ userinit(void)
     panic("userinit: out of memory?");
   inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
   p->sz = PGSIZE;
+  p->ctime = ticks;
+  p->priority = 2;
+
   memset(p->tf, 0, sizeof(*p->tf));
   p->tf->cs = (SEG_UCODE << 3) | DPL_USER;
   p->tf->ds = (SEG_UDATA << 3) | DPL_USER;
@@ -362,7 +369,11 @@ scheduler(void)
 			
 			p = ptable.que[priority][0];
 			
-			
+			p->tickcounter ++;
+      if (p->tickcounter==1){
+        p->first_res_time = ticks;
+      }
+
 			// deleting 
 			int i;
 			for (i = 0; i < ptable.priCount[priority]; i++) {
@@ -380,6 +391,7 @@ scheduler(void)
       // before jumping back to us.
       c->proc = p;
       switchuvm(p);
+      p->ltime =ticks;
       p->state = RUNNING;
 
       swtch(&(c->scheduler), p->context);
