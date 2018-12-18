@@ -599,25 +599,6 @@ procdump(void)
   }
 }
 
-// *** MY CODE HERE *** //
-
-// int counts (struct countTable *ct){
-
-// 	acquire(&ptable.lock);
-	
-// 	for (int i=0 ; i<22 ; i++){
-// 	(ct->system_calls)[i] = count_calls[i] ;
-// 	} 
-	
-	
-// 	release(&ptable.lock);
-// 	return 22;
-// }
-
-// *** MY CODE HERE *** //
-
-
-
 void resetPriority(void) {
     struct proc *p;
     acquire(&ptable.lock);
@@ -654,10 +635,6 @@ int counts(struct table* tb){
   tb->counts[3] = -128;
   return 0;
 
-    // for (int i = 0; i <22 ; ++i) {
-    //     tb->counts[i] =tB.counts[i];
-    // }
-    // return 0;
 }
 
 void incer(int sys_num){
