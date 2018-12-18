@@ -99,4 +99,21 @@ sys_uptime(void)
 //   argptr(0,(void*)&ct,sizeof(*ct));
 //   return count(ct);
 // }
+int
+sys_nice(void) {
+    int n;
+    if(argint(0,&n) < 0)
+        return -1;
+    myproc()->priority = n;
+    return 0;
+}
+
+int
+sys_getpri(void) {
+    if (myproc() != 0) {
+        cprintf("PID:%d, Parent's PID:%d ,priority:%d\n",myproc()->pid, myproc()->parent->pid, myproc()->priority);
+        return 0;
+    }
+    return -1;
+}
 
