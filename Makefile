@@ -176,6 +176,7 @@ UPROGS=\
 	_zombie\
 	_cpu_intensive_test\
 	_test\
+	_io_intensive_test\
 
 
 fs.img: mkfs README $(UPROGS)
