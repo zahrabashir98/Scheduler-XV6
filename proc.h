@@ -1,5 +1,3 @@
-#define PRIORITY_MAX 2 
-
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
@@ -43,9 +41,6 @@ struct proc {
   char *kstack;                // Bottom of kernel stack for this process
   enum procstate state;        // Process state
   int pid;                     // Process ID
-  //###
-  int priority;
-  //###
   struct proc *parent;         // Parent process
   struct trapframe *tf;        // Trap frame for current syscall
   struct context *context;     // swtch() here to run process
@@ -58,7 +53,6 @@ struct proc {
   int ltime;
   int tickcounter;
   int first_res_time;
-
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -66,5 +60,3 @@ struct proc {
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
-extern struct cpu *cpu asm("%gs:0");       // &cpus[cpunum()]
-extern struct proc *proc asm("%gs:4");     // cpus[cpunum()].proc

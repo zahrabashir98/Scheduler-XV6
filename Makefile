@@ -165,6 +165,7 @@ UPROGS=\
 	_grep\
 	_init\
 	_kill\
+	_testc\
 	_ln\
 	_ls\
 	_mkdir\
@@ -174,9 +175,8 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
-	_cpu_intensive_test\
-	_test\
 	_io_intensive_test\
+	_cpu_intensive_test\
 
 
 fs.img: mkfs README $(UPROGS)
@@ -184,7 +184,7 @@ fs.img: mkfs README $(UPROGS)
 
 -include *.d
 
-clean:
+clean: 
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
 	*.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel xv6.img fs.img kernelmemfs mkfs \
@@ -246,7 +246,7 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
-	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c count.c zombie.c\
+	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c testc.c zombie.c\
 	printf.c umalloc.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
