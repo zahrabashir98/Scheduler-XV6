@@ -10,3 +10,16 @@ We put some attributes in the proc struct such as ctime,ltime, first_res_time wh
 So we put them in appropriate places in proc.c file and then we wrote a system call that gets these informations from kernel mode to user mode and we used them simply for our tests.
 We have two files named io_intensive_test and cpu_intensive_test which the test of each of them is written there.
 
+
+## Phase3:
+Implelemnt MLFQ scheduler for xv6.
+What we did wasassigning a queue of default length(here 3) to proc.c struct and we assign some atrributes related to indexing in the array
+then we need to change the code of some functions such as :fork(),yeild(), userinit(),scheduler, wait() etc
+and we added a method named "resetPriority" for boosting after a while.
+the mechanism is simple:
+at first all of the processes come to the highest level(here 0) and then after some while if they are not done, they yield and go to the lowest priorty and the other process in the 0 priorty will be done after.
+
+
+
+## Optimization:
+Actually our solution was resizing the queue length or maybe cahnaging the number of queues.
