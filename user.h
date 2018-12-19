@@ -1,7 +1,5 @@
 struct stat;
 struct rtcdate;
-struct countTable;
-struct proc;
 struct table;
 
 // system calls
@@ -27,10 +25,6 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int counts(struct table*);
-int nice(int);
-int getpri(struct proc*);
-
-
 
 // ulib.c
 int stat(char*, struct stat*);
@@ -45,4 +39,9 @@ void* memset(void*, int, uint);
 void* malloc(uint);
 void free(void*);
 int atoi(const char*);
+
+
+
+
+
 
